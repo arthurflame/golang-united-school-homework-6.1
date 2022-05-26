@@ -1,7 +1,16 @@
 package main
 
+import (
+	"errors"
+	"fmt"
+)
+
 func main() {
-	
+	newBox := NewBox(1)
+
+	newBox.AddShape(Circle{Radius: float64(2)})
+
+	fmt.Println("box:", newBox)
 }
 
 // box contains list of shapes and able to perform operations on them
@@ -14,13 +23,20 @@ type box struct {
 func NewBox(shapesCapacity int) *box {
 	return &box{
 		shapesCapacity: shapesCapacity,
+		shapes: make([]Shape, 0, shapesCapacity),
 	}
 }
 
 // AddShape adds shape to the box
 // returns the error in case it goes out of the shapesCapacity range.
 func (b *box) AddShape(shape Shape) error {
-	panic("implement me")
+	noCapacity := errors.New("not enough capacity")
+	if len(b.shapes) < b.shapesCapacity {
+		b.shapes = append(b.shapes, shape)
+		return nil
+	}  else {
+		return noCapacity
+	}
 }
 
 // GetByIndex allows getting shape by index
