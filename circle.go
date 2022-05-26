@@ -1,4 +1,4 @@
-package golang_united_school_homework
+package main
 
 // Circle must satisfy to Shape interface
 type Circle struct {

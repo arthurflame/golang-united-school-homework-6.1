@@ -1,4 +1,4 @@
-package golang_united_school_homework
+package main
 
 // Triangle must satisfy to Shape interface
 type Triangle struct {
