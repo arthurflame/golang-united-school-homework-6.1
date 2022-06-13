@@ -6,11 +6,19 @@ import (
 )
 
 func main() {
-	newBox := NewBox(1)
+	newBox := NewBox(2)
 
-	newBox.AddShape(Circle{Radius: float64(2)})
+	err := newBox.AddShape(Circle{Radius: 2.2})
+	if err != nil {
+		return
+	}
 
 	fmt.Println("box:", newBox)
+	// fmt.Println(newBox.GetByIndex(1))
+	fmt.Println(newBox)
+	fmt.Println(newBox.ExtractByIndex(0))
+	fmt.Println(newBox)
+
 }
 
 // box contains list of shapes and able to perform operations on them
@@ -23,7 +31,7 @@ type box struct {
 func NewBox(shapesCapacity int) *box {
 	return &box{
 		shapesCapacity: shapesCapacity,
-		shapes: make([]Shape, 0, shapesCapacity),
+		shapes:         make([]Shape, 0, shapesCapacity),
 	}
 }
 
@@ -31,32 +39,52 @@ func NewBox(shapesCapacity int) *box {
 // returns the error in case it goes out of the shapesCapacity range.
 func (b *box) AddShape(shape Shape) error {
 	noCapacity := errors.New("not enough capacity")
+
 	if len(b.shapes) < b.shapesCapacity {
 		b.shapes = append(b.shapes, shape)
 		return nil
-	}  else {
-		return noCapacity
+	} else {
+		return fmt.Errorf("%w", noCapacity)
 	}
 }
 
 // GetByIndex allows getting shape by index
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
-	panic("implement me")
+	if len(b.shapes) <= i {
+		return nil, errors.New("doesn't exist")
+	}
 
+	for k, v := range b.shapes {
+		if k == i {
+			return v, nil
+		}
+	}
+
+	return nil, errors.New("doesn't exist")
 }
 
 // ExtractByIndex allows getting shape by index and removes this shape from the list.
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
-	panic("implement me")
+	figure, err := b.GetByIndex(i)
+
+	if err != nil {
+		return nil, err
+	}
+
+	b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
+	return figure, nil
 
 }
 
 // ReplaceByIndex allows replacing shape by index and returns removed shape.
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
-	panic("implement me")
+	figure, err := b.GetByIndex(i)
+	if err != nil {
+		return nil, err
+	}
 
 }
 
